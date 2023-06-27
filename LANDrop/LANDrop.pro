@@ -81,3 +81,8 @@ unix {
 }
 
 QMAKE_INFO_PLIST = Info.plist
+
+win32: LIBS += -L$$PWD/../../../../APP/libsodium/x64/Release/v143/dynamic/ -llibsodium
+
+INCLUDEPATH += $$PWD/../../../../APP/libsodium/include
+DEPENDPATH += $$PWD/../../../../APP/libsodium/include

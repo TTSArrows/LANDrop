@@ -51,6 +51,7 @@ private:
     Ui::SelectFilesDialog *ui;
     DiscoveryService &discoveryService;
     QList<QSharedPointer<QFile>> files;
+    QList<QString> filepaths;
     QStringListModel filesStringListModel;
     void addFile(const QString &filename);
     void updateFileStringListModel();
@@ -58,6 +59,9 @@ private slots:
     void addButtonClicked();
     void removeButtonClicked();
     void accept();
+
+    void on_folderButton_clicked();
+
 protected:
     void dragEnterEvent(QDragEnterEvent *event);
     void dropEvent(QDropEvent *event);

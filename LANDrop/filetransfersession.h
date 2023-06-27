@@ -43,6 +43,7 @@ public:
     struct FileMetadata {
         QString filename;
         quint64 size;
+        QString filepath;
     };
     explicit FileTransferSession(QObject *parent, QTcpSocket *socket);
     void start();

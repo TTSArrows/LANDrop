@@ -44,6 +44,13 @@
       </widget>
      </item>
      <item>
+      <widget class="QPushButton" name="folderButton">
+       <property name="text">
+        <string>Add Folder...</string>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QPushButton" name="removeButton">
        <property name="text">
         <string>Remove</string>

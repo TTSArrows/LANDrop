@@ -35,6 +35,8 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QMimeData>
+#include <QDir>
+#include <QtWidgets>
 
 #include "selectfilesdialog.h"
 #include "sendtodialog.h"
@@ -60,11 +62,13 @@ SelectFilesDialog::~SelectFilesDialog()
 
 void SelectFilesDialog::addFile(const QString &filename)
 {
+    // Check if file already in file list
     foreach (QSharedPointer<QFile> file, files) {
         if (file->fileName() == filename)
             return;
     }
 
+    // check if file exist or regular
     QSharedPointer<QFile> fp = QSharedPointer<QFile>::create(filename);
     if (!fp->open(QIODevice::ReadOnly)) {
         QMessageBox::critical(this, QApplication::applicationName(),
@@ -98,6 +102,23 @@ void SelectFilesDialog::addButtonClicked()
 
     foreach (const QString &filename, filenames) {
         addFile(filename);
+    }
+
+    updateFileStringListModel();
+}
+
+void SelectFilesDialog::on_folderButton_clicked()
+{
+    QString selectedDir = QFileDialog::getExistingDirectory(this,"Select folder to be Sent");
+    if (selectedDir.isEmpty()) {
+        return;
+    }
+    QDirIterator folderiter(selectedDir,
+                      QDir::Files | QDir::NoSymLinks,
+                      QDirIterator::Subdirectories);
+    while(folderiter.hasNext()){
+        folderiter.next();
+        addFile(folderiter.fileInfo().absoluteFilePath());
     }
 
     updateFileStringListModel();
@@ -146,3 +167,6 @@ void SelectFilesDialog::dropEvent(QDropEvent *event)
         event->acceptProposedAction();
     }
 }
+
+
+

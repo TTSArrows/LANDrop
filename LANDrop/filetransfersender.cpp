@@ -48,7 +48,7 @@ FileTransferSender::FileTransferSender(QObject *parent, QTcpSocket *socket, cons
         QString filename = QFileInfo(*file).fileName();
         quint64 size = static_cast<quint64>(file->size());
         totalSize += size;
-        transferQ.append({filename, size});
+        transferQ.append({filename, size, "none"});
     }
 }
 
