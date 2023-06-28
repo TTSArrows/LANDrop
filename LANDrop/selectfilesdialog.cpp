@@ -102,9 +102,7 @@ void SelectFilesDialog::addButtonClicked()
         return;
 
     foreach (const QString &filename, filenames) {
-        QDir dir(filename);
-        QString relative = dir.relativeFilePath(filename);
-        addFile(filename, relative);
+        addFile(filename, tr(""));
     }
 
     updateFileStringListModel();
@@ -123,8 +121,10 @@ void SelectFilesDialog::on_folderButton_clicked()
         folderiter.next();
         QString filename = folderiter.fileInfo().absoluteFilePath();
         QDir dir(selectedDir);
+        QDir filedir(filename);
         dir.cdUp();
-        QString relative = dir.relativeFilePath(filename);
+        filedir.cdUp();
+        QString relative = dir.relativeFilePath(filedir.absolutePath());
         addFile(filename, relative);
     }
 
@@ -169,10 +169,7 @@ void SelectFilesDialog::dropEvent(QDropEvent *event)
     if (event->mimeData()->hasUrls()) {
         foreach (const QUrl &url, event->mimeData()->urls()) {
             QString filename = url.toLocalFile();
-            QDir dir(filename);
-            QString relative = dir.relativeFilePath(filename);
-            addFile(url.toLocalFile(), relative);
-//            addFile(url.toLocalFile());
+            addFile(url.toLocalFile(), tr(""));
         }
         updateFileStringListModel();
         event->acceptProposedAction();

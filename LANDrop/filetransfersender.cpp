@@ -60,6 +60,7 @@ void FileTransferSender::handshake1Finished()
         QJsonObject jsonFile;
         jsonFile.insert("filename", metadata.filename);
         jsonFile.insert("size", static_cast<qint64>(metadata.size));
+        jsonFile.insert("relative", metadata.filepath);
         jsonFiles.append(jsonFile);
     }
 

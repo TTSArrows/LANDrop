@@ -113,9 +113,15 @@ void FileTransferReceiver::processReceivedData(const QByteArray &data)
                 return;
             }
 
+            QJsonValue filepath = o.value("filepath");
+            if (!filename.isString()) {
+                emit ended();
+                return;
+            }
+
             quint64 sizeInt = static_cast<quint64>(size.toDouble());
             totalSize += sizeInt;
-            transferQ.append({filename.toString(), sizeInt});
+            transferQ.append({filename.toString(), sizeInt, filepath.toString()});
         }
 
         emit fileMetadataReady(transferQ, totalSize, deviceName.toString(),
@@ -142,7 +148,22 @@ void FileTransferReceiver::createNextFile()
 {
     while (!transferQ.empty()) {
         FileMetadata &curFile = transferQ.first();
-        QString filename = downloadPath + QDir::separator() + curFile.filename;
+        QString filename;
+        if(curFile.filepath == ""){
+            filename = downloadPath + QDir::separator() + curFile.filename;
+        }
+        else{
+            QString folderpath = downloadPath + QDir::separator() + curFile.filepath;
+            if (!QDir().mkpath(folderpath)) {
+                emit errorOccurred(tr("Cannot create download path: ") + folderpath);
+                return;
+            }
+            if (!QFileInfo(folderpath).isWritable()) {
+                emit errorOccurred(tr("Download path is not writable: ") + folderpath);
+                return;
+            }
+            filename =  folderpath + QDir::separator() + curFile.filename;
+        }
         if (writingFile) {
             writingFile->deleteLater();
             writingFile = nullptr;
