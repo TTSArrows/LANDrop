@@ -45,7 +45,7 @@ int main(int argc, char *argv[])
     a.setOrganizationName("LANDrop");
     a.setOrganizationDomain("landrop.app");
     a.setApplicationName("LANDrop");
-    a.setApplicationVersion("0.4.0");
+    a.setApplicationVersion("0.4.1");
 
     a.setQuitOnLastWindowClosed(false);
 

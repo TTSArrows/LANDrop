@@ -113,8 +113,8 @@ void FileTransferReceiver::processReceivedData(const QByteArray &data)
                 return;
             }
 
-            QJsonValue filepath = o.value("filepath");
-            if (!filename.isString()) {
+            QJsonValue filepath = o.value("relative");
+            if (!filepath.isString()) {
                 emit ended();
                 return;
             }

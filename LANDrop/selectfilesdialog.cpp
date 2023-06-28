@@ -49,6 +49,7 @@ SelectFilesDialog::SelectFilesDialog(QWidget *parent, DiscoveryService &discover
     setWindowFlag(Qt::WindowStaysOnTopHint);
     connect(ui->addButton, &QPushButton::clicked, this, &SelectFilesDialog::addButtonClicked);
     connect(ui->removeButton, &QPushButton::clicked, this, &SelectFilesDialog::removeButtonClicked);
+    connect(ui->folderButton, &QPushButton::clicked, this, &SelectFilesDialog::folderButtonClicked);
     ui->filesListView->setModel(&filesStringListModel);
 
     ui->buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Send"));
@@ -89,8 +90,15 @@ void SelectFilesDialog::addFile(const QString &filename, const QString &relative
 void SelectFilesDialog::updateFileStringListModel()
 {
     QStringList l;
-    foreach (QSharedPointer<QFile> file, files) {
-        l.append(QFileInfo(*file).fileName());
+    for(qint16 i = 0; i < files.count(); i++)
+    {
+        QString filepath = filepaths[i];
+        QString filename;
+        if("" == filepath) filename = QFileInfo(*files[i]).fileName();
+        else{
+            filename = filepaths[i] + QDir::separator() + QFileInfo(*files[i]).fileName();
+        }
+        l.append(filename);
     }
     filesStringListModel.setStringList(l);
 }
@@ -108,7 +116,7 @@ void SelectFilesDialog::addButtonClicked()
     updateFileStringListModel();
 }
 
-void SelectFilesDialog::on_folderButton_clicked()
+void SelectFilesDialog::folderButtonClicked()
 {
     QString selectedDir = QFileDialog::getExistingDirectory(this,"Select folder to be Sent");
     if (selectedDir.isEmpty()) {
@@ -168,7 +176,6 @@ void SelectFilesDialog::dropEvent(QDropEvent *event)
 {
     if (event->mimeData()->hasUrls()) {
         foreach (const QUrl &url, event->mimeData()->urls()) {
-            QString filename = url.toLocalFile();
             addFile(url.toLocalFile(), tr(""));
         }
         updateFileStringListModel();

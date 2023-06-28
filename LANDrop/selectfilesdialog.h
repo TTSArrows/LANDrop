@@ -59,8 +59,8 @@ private slots:
     void addButtonClicked();
     void removeButtonClicked();
     void accept();
-
-    void on_folderButton_clicked();
+    
+    void folderButtonClicked();
 
 protected:
     void dragEnterEvent(QDragEnterEvent *event);
