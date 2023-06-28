@@ -143,11 +143,16 @@ void SelectFilesDialog::removeButtonClicked()
 {
     QModelIndexList indexes = ui->filesListView->selectionModel()->selectedIndexes();
     QList<const QSharedPointer<QFile> *> removeList;
+    QList<const QString *> pathremoveList;
     foreach (const QModelIndex &i, indexes) {
         removeList.append(&files.at(i.row()));
+        pathremoveList.append(&filepaths.at(i.row()));
     }
     foreach (const QSharedPointer<QFile> *fp, removeList) {
         files.removeOne(*fp);
+    }
+    foreach (const QString *path, pathremoveList) {
+        filepaths.removeOne(*path);
     }
     updateFileStringListModel();
 }
