@@ -47,12 +47,13 @@ namespace Ui {
 class SendToDialog : public QDialog {
     Q_OBJECT
 public:
-    explicit SendToDialog(QWidget *parent, const QList<QSharedPointer<QFile>> &files,
+    explicit SendToDialog(QWidget *parent, const QList<QSharedPointer<QFile>> &files, const QList<QString> &filepaths,
                           DiscoveryService &discoveryService);
     ~SendToDialog();
 private:
     Ui::SendToDialog *ui;
     QList<QSharedPointer<QFile>> files;
+    QList<QString> filepaths;
     QStringListModel hostsStringListModel;
     struct Endpoint {
         QHostAddress addr;

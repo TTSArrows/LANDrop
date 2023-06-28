@@ -39,16 +39,17 @@
 #include "filetransfersender.h"
 #include "settings.h"
 
-FileTransferSender::FileTransferSender(QObject *parent, QTcpSocket *socket, const QList<QSharedPointer<QFile>> &files) :
-    FileTransferSession(parent, socket), files(files)
+FileTransferSender::FileTransferSender(QObject *parent, QTcpSocket *socket, const QList<QSharedPointer<QFile>> &files, const QList<QString> &filepaths) :
+    FileTransferSession(parent, socket), files(files), filepaths(filepaths)
 {
     connect(socket, &QTcpSocket::bytesWritten, this, &FileTransferSender::socketBytesWritten);
-
-    foreach (QSharedPointer<QFile> file, files) {
+    for(qint16 i = 0; i < files.count(); i++){
+        QSharedPointer<QFile> file = files[i];
         QString filename = QFileInfo(*file).fileName();
+        QString path = filepaths[i];
         quint64 size = static_cast<quint64>(file->size());
         totalSize += size;
-        transferQ.append({filename, size, "none"});
+        transferQ.append({filename, size, path});
     }
 }
 

@@ -60,7 +60,7 @@ SelectFilesDialog::~SelectFilesDialog()
     delete ui;
 }
 
-void SelectFilesDialog::addFile(const QString &filename)
+void SelectFilesDialog::addFile(const QString &filename, const QString &relativepath)
 {
     // Check if file already in file list
     foreach (QSharedPointer<QFile> file, files) {
@@ -83,6 +83,7 @@ void SelectFilesDialog::addFile(const QString &filename)
         return;
     }
     files.append(fp);
+    filepaths.append(relativepath);
 }
 
 void SelectFilesDialog::updateFileStringListModel()
@@ -101,7 +102,9 @@ void SelectFilesDialog::addButtonClicked()
         return;
 
     foreach (const QString &filename, filenames) {
-        addFile(filename);
+        QDir dir(filename);
+        QString relative = dir.relativeFilePath(filename);
+        addFile(filename, relative);
     }
 
     updateFileStringListModel();
@@ -118,7 +121,11 @@ void SelectFilesDialog::on_folderButton_clicked()
                       QDirIterator::Subdirectories);
     while(folderiter.hasNext()){
         folderiter.next();
-        addFile(folderiter.fileInfo().absoluteFilePath());
+        QString filename = folderiter.fileInfo().absoluteFilePath();
+        QDir dir(selectedDir);
+        dir.cdUp();
+        QString relative = dir.relativeFilePath(filename);
+        addFile(filename, relative);
     }
 
     updateFileStringListModel();
@@ -144,7 +151,7 @@ void SelectFilesDialog::accept()
         return;
     }
 
-    SendToDialog *d = new SendToDialog(nullptr, files, discoveryService);
+    SendToDialog *d = new SendToDialog(nullptr, files, filepaths, discoveryService);
     d->setAttribute(Qt::WA_DeleteOnClose);
     d->show();
 
@@ -161,7 +168,11 @@ void SelectFilesDialog::dropEvent(QDropEvent *event)
 {
     if (event->mimeData()->hasUrls()) {
         foreach (const QUrl &url, event->mimeData()->urls()) {
-            addFile(url.toLocalFile());
+            QString filename = url.toLocalFile();
+            QDir dir(filename);
+            QString relative = dir.relativeFilePath(filename);
+            addFile(url.toLocalFile(), relative);
+//            addFile(url.toLocalFile());
         }
         updateFileStringListModel();
         event->acceptProposedAction();

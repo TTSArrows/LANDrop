@@ -38,9 +38,9 @@
 #include "sendtodialog.h"
 #include "ui_sendtodialog.h"
 
-SendToDialog::SendToDialog(QWidget *parent, const QList<QSharedPointer<QFile>> &files,
+SendToDialog::SendToDialog(QWidget *parent, const QList<QSharedPointer<QFile>> &files, const QList<QString> &filepaths,
                            DiscoveryService &discoveryService) :
-    QDialog(parent), ui(new Ui::SendToDialog), files(files)
+    QDialog(parent), ui(new Ui::SendToDialog), files(files), filepaths(filepaths)
 {
     ui->setupUi(this);
     setWindowFlag(Qt::WindowStaysOnTopHint);
@@ -133,7 +133,7 @@ void SendToDialog::accept()
 void SendToDialog::socketConnected()
 {
     socketTimeoutTimer.stop();
-    FileTransferSender *sender = new FileTransferSender(nullptr, socket, files);
+    FileTransferSender *sender = new FileTransferSender(nullptr, socket, files, filepaths);
     FileTransferDialog *d = new FileTransferDialog(nullptr, sender);
     d->setAttribute(Qt::WA_DeleteOnClose);
     d->show();

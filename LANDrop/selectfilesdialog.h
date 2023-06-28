@@ -53,7 +53,7 @@ private:
     QList<QSharedPointer<QFile>> files;
     QList<QString> filepaths;
     QStringListModel filesStringListModel;
-    void addFile(const QString &filename);
+    void addFile(const QString &filename, const QString &relativepath);
     void updateFileStringListModel();
 private slots:
     void addButtonClicked();
